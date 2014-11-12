@@ -1,0 +1,16 @@
+<div>
+<div class="panel <%= @panel_class %>">
+  <div class="panel-heading">
+    The Panel of Diff
+  </div>
+  <div class="panel-body">
+    The panel's class this time is <code><%= @panel_class %></code>.
+  </div>
+</div>
+<div class="progress progress-striped active">
+  <div class="progress-bar progress-bar-success width<%= rand(21) * 5 %>"></div>
+</div>
+<p class="text-muted" title="<%= @request_time.to_s %>">
+  Requested at <%= @request_time.strftime("%Y-%m-%d %H:%M:%S:%L") %>
+</p>
+</div>

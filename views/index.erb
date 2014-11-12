@@ -13,48 +13,41 @@
     <script src="/bower_components/react/react.min.js"></script>
     <script src="/bower_components/react/JSXTransformer.js"></script>
     <script src="/reactize.js"></script>
-    <script src="/turbolinks-reactize.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
   </head>
   <body>
+    <div id="queries" hidden>
+      <ul>
+        <li><a rel="partial" href="/partial">partial</a></li>
+        <li><a rel="partial_clone" href="/partial_clone">partial_clone</a></li>
+      </ul>
+    </div>
     <div class="container">
       <div class="row">
         <div class="col-md-6 col-md-offset-3">
           <h1>Reactize</h1>
           <p class="lead">
-            This is a mix of <a href="http://facebook.github.io/react/">React</a>,
-            React's <a href="http://facebook.github.io/react/docs/jsx-in-depth.html">JSX</a>,
-            and a slightly-modified <a href="https://github.com/rails/turbolinks/">Turbolinks</a> that
-            applies DOM "diffs" without any server configuration&mdash;it
-            just needs plain old HTML.
+            This is a fork from <a href="https://github.com/ssorallen/turbo-react/">turbo-react</a> thats remove the turbo-link part and instead updates sections of the page without fetching the hole page.
           </p>
-          <div class="panel <%= @panel_class %>">
-            <div class="panel-heading">
-              The Panel of Diff
-            </div>
-            <div class="panel-body">
-              The panel's class this time is <code><%= @panel_class %></code>.
-            </div>
+          <div id="widget">
+            <%= erb :partial %>
           </div>
-          <div class="progress progress-striped active">
-            <div class="progress-bar progress-bar-success width<%= rand(21) * 5 %>"></div>
+
+          <h3>(Clone) representation</h3>
+          <div id="widget_clone">
+            <%= erb :partial_clone %>
           </div>
-          <p><a class="btn btn-primary" href="/">Re-request this page</a></p>
-          <p class="text-muted" title="<%= @request_time.to_s %>">
-            Requested at <%= @request_time.strftime("%Y-%m-%d %H:%M:%S") %>
-          </p>
+
+
 
           <h3>What it's doing</h3>
           <p>"Re-request this page" is just a link to the current page. When you
-            click it, Turbolinks intercepts the GET request and fetchs the
-            full page via XHR.</p>
+            click it, this will only show when javascript support is shut off. And a full page load will happen.</p>
           <p>The panel is rendered with a random <code>panel-</code> class on each
             request, and the progress bar gets a random <code>widthX</code>
             class.</p>
-          <p>With Turbolinks alone, the entire <code>&lt;body&gt;</code> would be
-            replaced, and transitions would not happen. In this little demo
-            though, React adds and removes classes and text, and the attribute
-            changes are animated with CSS transitions. The DOM is otherwise
-            left in tact.</p>
+          <p>With javascript on the <code>widget</code> element on the page will be fetched and replaced with React. The button text will be replaced with "Reload only part of page", to indicate what will happen.
+          <p>A clone representation of the panel is rendered below the main panel to show how the rendering behaivs if its made by javascript or a page load. If javascript is enabled the Requested at time will differ due to that the data is fetched twice by each widget. If javascript is dissabled it will be the same because the data is rendered in the same request, the same technique will apply for the panel class. The progress bar will not be the same on the original and the clone, its becasue its values are calculated in the view.
 
           <h3>The Code</h3>
           <p>
@@ -79,4 +72,32 @@
       </div>
     </div>
   </body>
+  <script type="text/javascript">
+  
+  $(document).ready(function(){
+
+    $("#button").text("Reload only part of page")
+
+    $(document).on("click", "#button", function(element) {
+      href = $('body').find('a[rel=partial]').attr("href")
+      $.get(href, function(data) {
+        Reactize.applyDiffOnHTMLString(document.getElementById("widget"), data)
+        $("#button").text("Reload only part of page")
+        $(window).trigger("update");
+      });
+      return false
+    });
+
+    $(window).on("update", function(){
+      href = $('body').find('a[rel=partial_clone]').attr("href")
+      $.get(href, function(data) {
+        Reactize.applyDiffOnHTMLString(document.getElementById("widget_clone"), data)
+      });
+      return false
+    });
+
+  });
+
+</script>
 </html>
+

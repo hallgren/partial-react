@@ -1,5 +1,5 @@
 /**
- * Reactize v0.3.0
+ * Reactize v0.4.0
  */
 (function(exports) {
   var Reactize = {};
@@ -12,6 +12,12 @@
       this.htmlToJsx(element.innerHTML)).code;
 
     return eval(code);
+  };
+
+  Reactize.applyDiffOnHTMLString = function(current_element, html_string) {
+    var div = document.createElement('div');
+    div.innerHTML = html_string
+    Reactize.applyDiff(current_element, div)
   };
 
   Reactize.applyDiff = function(current_element, new_element) {
@@ -28,9 +34,7 @@
     return html.replace(CLASS_NAME_REGEX, " className=");
   };
 
-  Reactize.version = "0.3.0";
-
-  window.onload = Reactize.applyBodyDiff;
+  Reactize.version = "0.4.0";
 
   exports.Reactize = Reactize;
 })(window);
