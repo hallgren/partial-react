@@ -1,4 +1,6 @@
-# partial-react is a branch from turbo-react that updates a custom element instead of only the body the body element.
+# partial-react
+
+partial-react is a branch from turbo-react that updates a custom element instead of only the body the body element.
 
 **Demo:** https://partial-react.herokuapp.com/
 
